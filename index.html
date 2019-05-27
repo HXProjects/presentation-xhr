@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<section>
+						<H1>XMLHTTPRequest</H1>
+					<h2>Evolution</h2>
+					</section>
+					
+					<section>
+						<h1>Let's speak about:</h1>
+						<ul>
+							<li>AJAX</li>
+							<li>XMLHTTPRequest</li>
+							<li>Working with xhr: callbacks</li>
+							<li>Promises</li>
+							<li>fetch()</li>
+							
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section><h1>Ajax</h1></section>
+					<section data-transition="slide">
+						<h2>
+						A Typical web request</h2>
+					<ul>
+						<li class="fragment fade-up">Web browser request a URLfrom server.</li>
+						<li class="fragment fade-up">The server sends a response (with HTML file & JSfiles). </li>
+						<li class="fragment fade-up">Browser takes the HTML, loads that into our Dom</li>
+						<li class="fragment fade-up">JS gets executes which may interact with the DOM.</li>
+					</ul>
+
+					</section>
+					<section data-transition="slide-in fade-out">
+						
+					</section>
+				</section>
+				<section>
+					<section><h2>XMLHttpRequest</h2></section>
+					<section>
+					<h3>XHR</h3>
+					<pre>
+						<code class="fragment fade-up">var xhr = new XMLHttpRequest();</code>
+						<code class="fragment fade-up">xhr.open('GET', 'phones.json', true);</code>
+						<code class="fragment fade-up">xhr.send();</code>						
+						</code></pre>
+				</section>
+				<section><pre>
+						<code>getText = function(url, callback){
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
+xhr.send();</code><code class="fragment fade-up">xhr.onreadystatechange = function(){
+if (xhr.readyState === 4)&&(xhr.state === 200){
+ //call callback function
+ callback(request.responseText);
+ } 
+} 
+else {
+ //do smth else
+ }
+}</code><code class="fragment fade-up">function callbackFunction(data) {//do smth with data; } 
+
+getText('someurl', callbackFunction);</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code>updatedEntry.forEach(function(entry) {
+entry.save(function(error, savedEntry) {
+ if(error) { console.log(error); }
+ fetchClientsUsingSavedEntry(savedEntry, function(error, clients) {
+	 if(error) { console.log(error); }
+	 clients.forEach(client) {
+	 client.sendUpdate(function(error, sentEntry) {
+		if(error) { console.log(error); }
+		});
+	 }
+ });
+});
+							});</code>
+					</pre>
+
+				</section>
+				</section>
+				<section>
+					<section>
+						<h3>Promises</h3>
+					</section>
+					<section> <h2>JQuery</h2><pre><code>$.ajax({
+	method: 'GET',
+	url: 'http://reddit.com/r/webdev.json'),
+	dataType: 'json'
+})
+.done(function(data) {
+	//handle successful response
+	processResponse(data);
+})
+.fail(function() {
+	//Handle errors
+	handleError();
+})
+.always(function() {
+	//Always update the UI with status
+});</code></pre></section>
+
+					<section>
+						<img src="./assets/promises.png" alt="">
+					</section>
+					<section>
+						<pre>
+							<code>var p = new Promise(function(resolve, rejected){
+// Do an async task async task and then...
+	if(/* good condition */) {
+		resolve('Success!');
+	}
+	else {
+		reject('Failure!');
+	}});
+p.then(function(result) { 
+	/* do something with the result */
+}).catch(function() {
+	/* error :( */
+}).finally(function() {
+	 /* executes regardless or success for failure */ 
+});</code></pre></section>
+<section>
+	<pre><code>var makeRequest = function (url, method) {</code>
+<code class="fragment fade-up" >var request = new XMLHttpRequest();</code>
+<code class="fragment fade-up" >return new Promise(function (resolve, reject) {</code>
+<code class="fragment fade-up" >request.onreadystatechange = function () {</code>
+<code class="fragment fade-up" >if (request.readyState !== 4) return;</code>
+<code class="fragment fade-up" >if (request.status >= 200 && request.status < 300){
+resolve(request);</code><code class="fragment fade-up" >} else { reject({...}); }
+	};
+ });
+};</code><code class="fragment fade-up" >request.open(method || 'GET', url, true);</code>
+<code class="fragment fade-up" >request.send();</code></pre>
+</section>
+<section><h2>then..</h2><pre><code>makeRequest('https://some-url.com/posts')
+.then(function (posts) {
+	console.log('Success!', posts);
+})
+.catch(function (error) {
+	console.log('Something went wrong', error);
+});
+</code></pre></section>
+<section>
+	<pre><code>Promise.all([promise1, promise2]).then(function(results) {
+// Both promises resolved
+})
+.catch(function(error) {
+// One or more promises was rejected
+});</code></pre>
+</section>
+
+				</section>
+				<section>
+					<section><h2>Fetch</h2><img src="./assets/fetch.gif" alt=""></section>
+					<section><pre><code>fetch(url)
+.then(function(response) {
+	 var dataPromise = response.json();
+	 return dataPromise;
+})
+.then(function(data) {
+	 //do something with data   
+});</code></pre></section>
+					<section><pre><code>var request1 = fetch('/users.json');
+var request2 = fetch('/articles.json');
+
+Promise.all([request1, request2]).then(function(results) {
+	// Both promises done!
+});</code></pre></section>
+
+				</section>
+				<section><h2>P.S</h2>
+				<h3>AJAJ?</h3>
+			
+				<img src="./assets/xml.png" alt="">
+				<img src="./assets/json.png" alt=""></section>
+				<section><img src="./assets/can i use.png" alt=""></section>
+				<section><h5>The End(for now).. or just beginning</h5>
+					<h5>Thanks</h5>
+				</section>
+				
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
