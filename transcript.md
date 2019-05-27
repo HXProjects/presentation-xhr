@@ -1,11 +1,11 @@
 [https://HXProjects.github.io/presentation-xhr/index](https://HXProjects.github.io/presentation-xhr/index)
 # XmlHttpRequest
 ## agenda
-1.AJAX
-2.XMLHTTPRequest
-3.Working with xhr: callbacks
-4.Promises
-5.fetch()
+1. AJAX
+2. XMLHTTPRequest
+3. Working with xhr: callbacks
+4. Promises
+5. fetch()
 
 ## AJAX
 Asynchronous JavaScript + XML
